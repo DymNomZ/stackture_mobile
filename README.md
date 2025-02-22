@@ -1,16 +1,20 @@
-# stackture_mobile
+# Stackture - Structure Your Stack (Mobile)
 
-A new Flutter project.
+An application that guides learners through a precise problem-focused strategy.
 
-## Getting Started
+**Project Goal/Purpose:** 
 
-This project is a starting point for a Flutter application.
+Stackture targets SDG 4, "Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all.”
 
-A few resources to get you started if this is your first Flutter project:
+Humans are the most important resources worth cultivating sustainably. Beyond ecosystems, economies, and industries, developing human minds and skills for future generations will be the most beneficial investment we can make in the present. To assist the youth of this generation undergoing education, Stackture aims to be a study tool that offers precise guidance in solving problems, overcoming learning gaps, and reaching goals.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+**Tech Stack**<br>
+[![My Skills](https://skillicons.dev/icons?i=dart,flutter&theme=dark)](https://skillicons.dev)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This is a part of **Stackture**.<br>
+For more info click on the main repo link below.<br>
+
+**Main repo link:**<br>
+https://github.com/DymNomZ/Stackture
+
+**Property of 5stack as part of the University of the Philippines' KOMSAI WEEK 2025 HACKATHON**
