@@ -13,7 +13,6 @@ Humans are the most important resources worth cultivating sustainably. Beyond ec
 
 This is a part of **Stackture**.<br>
 For more info click on the main repo link below.<br>
-
 **Main repo link:**<br>
 https://github.com/DymNomZ/Stackture
 
