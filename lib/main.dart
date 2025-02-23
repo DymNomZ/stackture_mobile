@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stackture_mobile/home_page.dart';
+import 'package:stackture_mobile/splashScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
       ),
-      home: const HomePage(),
+      home: SplashScreen(),
     );
   }
 }
