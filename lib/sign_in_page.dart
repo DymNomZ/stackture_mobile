@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stackture_mobile/home_page.dart';
 import 'package:stackture_mobile/utils/button.dart';
 import 'package:stackture_mobile/utils/colors.dart';
 import 'package:stackture_mobile/utils/textfield.dart';
@@ -82,8 +83,10 @@ class _SignInPageState extends State<SignInPage> with SingleTickerProviderStateM
             DefaultButton(
               text: "Submit", 
               function: () {
-                _usernameTfKey.currentState?.validateAndShake();
-                _passwordTfKey.currentState?.validateAndShake();
+                if(_usernameTfKey.currentState!.validateAndShake() &&
+                _passwordTfKey.currentState!.validateAndShake()){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+                }
               }
             ),
           ],

@@ -41,7 +41,7 @@ class ShakingTextFieldState extends State<ShakingTextField>
 
   String getText() => _controller.text;
 
-  void validateAndShake() {
+  bool validateAndShake() {
     setState(() {
       if (_controller.text.isEmpty) {
         _isError = true;
@@ -50,9 +50,10 @@ class ShakingTextFieldState extends State<ShakingTextField>
         _isError = false;
       }
     });
+    return !_isError;
   }
 
-  void checkIfMatch(String password) {
+  bool checkIfMatch(String password) {
     setState(() {
       if(password != _controller.text){
         _isError = true;
@@ -61,6 +62,7 @@ class ShakingTextFieldState extends State<ShakingTextField>
         _isError = false;
       }
     });
+    return !_isError;
   }
 
   @override

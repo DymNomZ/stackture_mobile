@@ -32,7 +32,6 @@ class _AuthPageState extends State<AuthPage> {
               height: 100,
             ),
             SizedBox(height: 20),
-            //ShakingTextField(),
             Text(
               "Stackture",
               style: TextStyle(
