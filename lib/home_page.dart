@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stackture_mobile/recentActivityPanel.dart';
+import 'package:stackture_mobile/recent_activity_panel.dart';
 
 
 class HomePage extends StatefulWidget {
