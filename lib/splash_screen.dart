@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stackture_mobile/utils/colors.dart';
 import 'package:stackture_mobile/auth_page.dart';
 import 'package:stackture_mobile/utils/variables.dart';
+import 'home_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -17,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => AuthPage()));
+          context, MaterialPageRoute(builder: (context) => HomePage()));
     });
   }
 

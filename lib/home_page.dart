@@ -30,7 +30,13 @@ class _HomePageState extends State<HomePage> {
         leading: IconButton(
           icon: Icon(Icons.door_back_door_outlined, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).pop();
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            } else {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            }
           },
         ),
       ),
@@ -54,132 +60,141 @@ class _HomePageState extends State<HomePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(height: 20),
-                Text(
-                  "Workspaces",
-                  style: TextStyle(
+            Padding(padding: EdgeInsets.only(top:  300),
+              child: Text(
+                "Workspaces",
+                style: TextStyle(
                     fontSize: 30, color: Colors.white, letterSpacing: 1.5,
                     fontWeight: FontWeight.bold, fontFamily: 'LilitaOne',
                     shadows: defaultShadow
-                  ),
                 ),
+              ),
+            ),
                 SizedBox(height: 10),
-                Text(
+                Padding(padding: EdgeInsets.only(left: 30, right: 30),
+                  child: Text(
                   "These are isolated spaces where you can have study sessions.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 15, color: Colors.white, letterSpacing: 1.5,
-                    fontWeight: FontWeight.bold, fontFamily: 'LilitaOne',
-                    shadows: defaultShadow
+                      fontSize: 15, color: Colors.white, letterSpacing: 1.5,
+                      fontWeight: FontWeight.bold, fontFamily: 'LilitaOne',
+                      shadows: defaultShadow
                   ),
                 ),
-                SizedBox(height: 10),
-                Expanded(
-                  child: ReorderableGridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount (
-                      crossAxisCount: 1,
-                      childAspectRatio: 2.5
-                    ),
-                    itemCount: filteredNotes.length,
-                    itemBuilder: (context, index) {
-                      //Note currentNote = filteredNotes[index];
-                      return Card(
-                        key: ValueKey(index),
-                        margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                        color: StacktureColors.tertiary,
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ListTile(
-                                  onTap: () {
 
-                                  },
-                                  title: RichText(
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                    text: TextSpan(
-                                        text: '${currentNote.title} \n',
-                                        style: TextStyle(
-                                            color: cardDarkMode(currentNote),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                            height: 1.5),
-                                        children: [
-                                          TextSpan(
-                                            text: currentNote.content,
-                                            style: TextStyle(
-                                                color: cardDarkMode(currentNote),
-                                                fontWeight: FontWeight.normal,
-                                                fontSize: 13,
-                                                height: 1.5),
-                                          )
-                                        ]),
-                                  ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      'Edited: ${DateFormat('EEE MMM d, yyyy h:mm a').format(currentNote.modifiedTime)}\nCreated on: ${DateFormat('EEE MMM d, yyyy h:mm a').format(currentNote.creationTime)}',
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontStyle: FontStyle.italic,
-                                          color: cardDarkMode(currentNote)),
-                                    ),
-                                  ),
-                                                ),
-                              ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 13.0),
-                                  child: Column(
-                                    children: [
-                                      DeleteNoteButton(onPressed: () async {
-                                      final result = await showDialog(
-                                        context: context,
-                                        builder: (_) => const ConfirmDelete(),
-                                      );
-                                      if (result != null && result) {
-                                        setState(() {
-                                          filteredNotes.remove(currentNote);
-                                          currentNote.delete();
-                                        });
-                                      }}, note: currentNote,),
-                                      MoveButton(onPressed: (){
-                                        setState(() {
-                                          isMoving = true;
-                                          folderList(currentNote);
-                                        });
-                                      }),
-                                    ],
-                                  ),
-                                )
-                            ],
-                          )));
-                    },
-                    onReorder: (oldIndex, newIndex) {
-                      setState(() {
-                        
-                      });
-                    },
-                  )
-                )
+                ),
+
+                SizedBox(height: 10),
+                // Expanded(
+                //   child: ReorderableGridView.builder(
+                //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount (
+                //       crossAxisCount: 1,
+                //       childAspectRatio: 2.5
+                //     ),
+                //     itemCount: filteredNotes.length,
+                //     itemBuilder: (context, index) {
+                //       //Note currentNote = filteredNotes[index];
+                //       return Card(
+                //         key: ValueKey(index),
+                //         margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                //         color: StacktureColors.tertiary,
+                //         elevation: 3,
+                //         shape: RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(10)),
+                //         child: Padding(
+                //           padding: const EdgeInsets.all(10.0),
+                //           child: Row(
+                //             children: [
+                //               Expanded(
+                //                 child: ListTile(
+                //                   onTap: () {
+                //
+                //                   },
+                //                   title: RichText(
+                //                     maxLines: 3,
+                //                     overflow: TextOverflow.ellipsis,
+                //                     text: TextSpan(
+                //                         text: '${currentNote.title} \n',
+                //                         style: TextStyle(
+                //                             color: cardDarkMode(currentNote),
+                //                             fontWeight: FontWeight.bold,
+                //                             fontSize: 14,
+                //                             height: 1.5),
+                //                         children: [
+                //                           TextSpan(
+                //                             text: currentNote.content,
+                //                             style: TextStyle(
+                //                                 color: cardDarkMode(currentNote),
+                //                                 fontWeight: FontWeight.normal,
+                //                                 fontSize: 13,
+                //                                 height: 1.5),
+                //                           )
+                //                         ]),
+                //                   ),
+                //                   subtitle: Padding(
+                //                     padding: const EdgeInsets.only(top: 8.0),
+                //                     child: Text(
+                //                       'Edited: ${DateFormat('EEE MMM d, yyyy h:mm a').format(currentNote.modifiedTime)}\nCreated on: ${DateFormat('EEE MMM d, yyyy h:mm a').format(currentNote.creationTime)}',
+                //                       style: TextStyle(
+                //                           fontSize: 10,
+                //                           fontStyle: FontStyle.italic,
+                //                           color: cardDarkMode(currentNote)),
+                //                     ),
+                //                   ),
+                //                                 ),
+                //               ),
+                //                 Padding(
+                //                   padding: const EdgeInsets.only(top: 13.0),
+                //                   child: Column(
+                //                     children: [
+                //                       DeleteNoteButton(onPressed: () async {
+                //                       final result = await showDialog(
+                //                         context: context,
+                //                         builder: (_) => const ConfirmDelete(),
+                //                       );
+                //                       if (result != null && result) {
+                //                         setState(() {
+                //                           filteredNotes.remove(currentNote);
+                //                           currentNote.delete();
+                //                         });
+                //                       }}, note: currentNote,),
+                //                       MoveButton(onPressed: (){
+                //                         setState(() {
+                //                           isMoving = true;
+                //                           folderList(currentNote);
+                //                         });
+                //                       }),
+                //                     ],
+                //                   ),
+                //                 )
+                //             ],
+                //           )));
+                //     },
+                //     onReorder: (oldIndex, newIndex) {
+                //       setState(() {
+                //
+                //       });
+                //     },
+                //   )
+                // )
               ],
             ),
           ),
           RecentActivityPanel(isVisible: _showRecent),
           AnimatedPositioned(
             duration: Duration(milliseconds: 300),
-            top: 10,
-            left: _showRecent ? 170 : 10,
+            top: 20,
+            left: _showRecent ? 170 : -17,
             child: FloatingActionButton(
               heroTag: "recent_btn",
               onPressed: toggleRecent,
               backgroundColor: StacktureColors.primary,
-              child: Icon(
-                _showRecent ? Icons.close : Icons.history,
-                color: Colors.white,
+              child: Transform.translate(
+                offset: Offset(_showRecent ? 0 : 6, 0), // Moves the icon 5 pixels to the left
+                child: Icon(
+                  _showRecent ? Icons.close : Icons.history,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
