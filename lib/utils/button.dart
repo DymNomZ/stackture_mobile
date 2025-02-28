@@ -6,16 +6,21 @@ class DefaultButton extends StatelessWidget {
 
   String text;
   Function? function;
+  double? width;
+  Color? color;
   
-  DefaultButton({super.key, required this.text, this.function});
+  DefaultButton({
+    super.key, required this.text, this.function, 
+    this.width, this.color
+  });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: StacktureColors.button,
-        minimumSize: Size(250, 50),
-        maximumSize: Size(250, 50),
+        backgroundColor: color ?? StacktureColors.button,
+        minimumSize: Size(width ?? 250, 50),
+        maximumSize: Size(width ?? 250, 50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),

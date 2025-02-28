@@ -4,9 +4,10 @@ import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 import 'package:stackture_mobile/recent_activity_panel.dart';
 import 'package:stackture_mobile/utils/colors.dart';
 import 'package:stackture_mobile/utils/fab_location.dart';
-import 'package:stackture_mobile/utils/task.dart';
+import 'package:stackture_mobile/utils/create_workspace_popup.dart';
+import 'package:stackture_mobile/utils/workspace.dart';
 import 'package:stackture_mobile/utils/variables.dart';
-
+import 'package:stackture_mobile/workspace_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,13 +17,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   bool _showRecent = false; // Controls recent activity visibility
-  List<Task> taskList = [];
-
-  //Dummy filler task
-  Task dummy = Task(
-    title: 'Sample Task', description: 'Sir Gemota\'s SOCSCI 031 and his adventures around the world',
-    content: 'Lorem ipsum...', creationTime: DateTime.now(), modifiedTime: DateTime.now()
-  );
 
   void toggleRecent() {
     setState(() {
@@ -30,18 +24,23 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  //Will be used to load tasks of user
-  void loadUserTasks(){
-    //temporary fill up 10 times
-    for(int i = 0; i < 10; i++) {
-      taskList.add(dummy);
-    }
+  //Will be used to load workspaces of user
+  void loadUserWorkspaces(){
+    setState(() {
+      
+    });
+  }
+
+  void refreshWorkspaces(){
+    setState(() {}); //refresh the list builder
   }
 
   @override
   void initState(){
     super.initState();
-    loadUserTasks();
+    setState(() {
+      loadUserWorkspaces();
+    });
   }
 
   @override
@@ -68,9 +67,14 @@ class _HomePageState extends State<HomePage> {
       FloatingActionButton(
         heroTag: "add_btn",
         backgroundColor: StacktureColors.primary,
-          child: Icon(Icons.add, color: Colors.white),
+        child: Icon(Icons.add, color: Colors.white),
         onPressed: () {
-          print('TO BE IMPLEMENTED');
+          showDialog(
+            context: context, 
+            builder: (context) {
+              return CreateWorkspacePopup(callBack: refreshWorkspaces);
+            }
+          );
         }
       ),
       body: Stack(
@@ -102,16 +106,16 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               Expanded(
                 child: ReorderableGridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount (
                     crossAxisCount: 1,
                     childAspectRatio: 2.5
                   ),
-                  itemCount: taskList.length,
+                  itemCount: workspaces.length,
                   itemBuilder: (context, index) {
-                    Task currentTask = taskList[index];
+                    Workspace currentWorkspace = workspaces[index];
                     return Card(
                       key: ValueKey(index),
                       margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -126,13 +130,17 @@ class _HomePageState extends State<HomePage> {
                             Expanded(
                               child: ListTile(
                                 onTap: () {
-                                  print('OPENS TASK TREE');
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                    return WorkspacePage(
+                                      title: currentWorkspace.title,
+                                    );
+                                  }));
                                 },
                                 title: RichText(
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   text: TextSpan(
-                                      text: '${currentTask.title} \n',
+                                      text: '${currentWorkspace.title} \n',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
@@ -140,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                                           height: 1.5),
                                       children: [
                                         TextSpan(
-                                          text: currentTask.description,
+                                          text: currentWorkspace.description,
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.normal,
@@ -152,7 +160,7 @@ class _HomePageState extends State<HomePage> {
                                 subtitle: Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
                                   child: Text(
-                                    'Edited: ${DateFormat('EEE MMM d, yyyy h:mm a').format(currentTask.modifiedTime)}\nCreated on: ${DateFormat('EEE MMM d, yyyy h:mm a').format(currentTask.creationTime)}',
+                                    'Edited: ${DateFormat('EEE MMM d, yyyy h:mm a').format(currentWorkspace.modifiedTime)}\nCreated on: ${DateFormat('EEE MMM d, yyyy h:mm a').format(currentWorkspace.creationTime)}',
                                     style: TextStyle(
                                         fontSize: 10,
                                         fontStyle: FontStyle.italic,
@@ -166,7 +174,8 @@ class _HomePageState extends State<HomePage> {
                             child: IconButton(
                               icon: Icon(Icons.delete_outline, color: Colors.white, size: 30),
                               onPressed: () {
-                                print('REMOVE TASK');
+                                workspaces.removeAt(index);
+                                refreshWorkspaces();
                               },
                             ),
                           )

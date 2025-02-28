@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 class ShakingTextField extends StatefulWidget {
   TextInputType? type;
-  String label, hint, errorText;
+  String? label, hint, errorText;
+  double? fontSize, errorSize;
 
   ShakingTextField({
     super.key, this.type, 
-    required this.label, required this.hint, required this.errorText
+    this.label, this.hint, this.errorText,
+    this.fontSize, this.errorSize
   });
 
   @override
@@ -95,7 +97,7 @@ class ShakingTextFieldState extends State<ShakingTextField>
                   fillColor: Colors.white,
                   hintText: widget.hint,
                   hintStyle:  TextStyle(
-                    fontSize: 15, color: Colors.black, letterSpacing: 1.5,
+                    fontSize: widget.fontSize ?? 15, color: Colors.black, letterSpacing: 1.5,
                     fontWeight: FontWeight.bold, fontFamily: 'VarelaRounded'
                   ),
                   border: OutlineInputBorder(
@@ -105,7 +107,7 @@ class ShakingTextFieldState extends State<ShakingTextField>
                   ),
                   errorText: _isError ? widget.errorText : null,
                   errorStyle: TextStyle(
-                    fontSize: 13, color: Colors.red, letterSpacing: 1.5,
+                    fontSize: widget.errorSize ?? 13, color: Colors.red, letterSpacing: 1.5,
                     fontWeight: FontWeight.bold, fontFamily: 'VarelaRounded',
                   ),
                   errorBorder: OutlineInputBorder(

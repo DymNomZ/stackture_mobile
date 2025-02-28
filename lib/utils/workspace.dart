@@ -1,15 +1,13 @@
-class Task {
+class Workspace {
 
   String title;
   String description;
-  String content;
   DateTime modifiedTime;
   DateTime creationTime;
 
-  Task({
+  Workspace({
     required this.title, required this.description,
-    required this.content, required this.modifiedTime,
-    required this.creationTime
+    required this.modifiedTime, required this.creationTime
   });
 
 }
