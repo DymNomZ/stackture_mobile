@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stackture_mobile/utils/api_service.dart';
 import 'package:stackture_mobile/utils/button.dart';
 import 'package:stackture_mobile/utils/colors.dart';
 import 'package:stackture_mobile/utils/textfield.dart';
@@ -19,6 +20,53 @@ class CreateWorkspacePopup extends StatefulWidget {
 class _CreateWorkspacePopupState extends State<CreateWorkspacePopup> {
   final GlobalKey<ShakingTextFieldState> _workspaceNameTfKey = GlobalKey<ShakingTextFieldState>();
   final GlobalKey<ShakingTextFieldState> _descriptionTfKey = GlobalKey<ShakingTextFieldState>();
+
+  bool _isLoading = false;
+
+  Future<void> _createWorkspace() async {
+
+    // Validate fields
+    bool isValid = _workspaceNameTfKey.currentState!.validateAndShake();
+
+    if (!isValid) return;
+
+    setState(() => _isLoading = true);
+
+    String title = _workspaceNameTfKey.currentState!.getText();
+    String description = _descriptionTfKey.currentState!.getText();
+
+    final response = await ApiService().createWorkspace(title, description);
+
+    if (response.containsKey("workspace_id")) {
+
+      //add new workspace
+      Workspace newWorkspace = 
+      Workspace(
+        id: response["workspace_id"],
+        title: title, description: description, 
+        creationTime: DateTime.now(),
+        modifiedTime: DateTime.now()
+      );
+    
+      workspaces.add(newWorkspace);
+      //trigger refresh list on home page
+      widget.callBack();
+
+      //pop the dialogue
+      Navigator.pop(context);
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return WorkspacePage(workspace: newWorkspace);
+      }));
+
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response["error"]), backgroundColor: Colors.red)
+      );
+    }
+
+    setState(() => _isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,29 +160,7 @@ class _CreateWorkspacePopupState extends State<CreateWorkspacePopup> {
                 width: 150,
                 color: StacktureColors.tertiary,
                 function: () {
-                  if (_workspaceNameTfKey.currentState!.validateAndShake()) {
-
-                    //add new workspace
-                    workspaces.add(
-                      Workspace(
-                        title: _workspaceNameTfKey.currentState!.getText(), 
-                        description: _descriptionTfKey.currentState!.getText(), 
-                        creationTime: DateTime.now(),
-                        modifiedTime: DateTime.now()
-                      )
-                    );
-                    //trigger refresh list on home page
-                    widget.callBack();
-
-                    //pop the dialogue
-                    Navigator.pop(context);
-
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return WorkspacePage(
-                        title: _workspaceNameTfKey.currentState!.getText(),
-                      );
-                    }));
-                  }
+                  _createWorkspace();
                 }
               ),
             ],

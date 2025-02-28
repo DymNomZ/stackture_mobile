@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:stackture_mobile/utils/colors.dart';
 import 'package:stackture_mobile/utils/fab_location.dart';
+import 'package:stackture_mobile/utils/workspace.dart';
 
 class WorkspacePage extends StatefulWidget {
 
-  String title;
+  Workspace workspace;
 
-  WorkspacePage({super.key, required this.title});
+  WorkspacePage({super.key, required this.workspace});
 
   @override
   State<WorkspacePage> createState() => _WorkspacePageState();
@@ -21,7 +22,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          widget.title,
+          widget.workspace.title,
           style: TextStyle(
               fontSize: 20, color: Colors.white, letterSpacing: 1.5,
               fontWeight: FontWeight.bold, fontFamily: 'LilitaOne'

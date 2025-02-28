@@ -2,13 +2,10 @@ import 'dart:ui';
 
 import 'package:stackture_mobile/utils/workspace.dart';
 
-List<Workspace> workspaces = [];
+//WILL HOLD TOKEN OF USER
+String? token;
 
-  //Dummy filler task
-  Workspace dummy = Workspace(
-    title: 'Sample Task', description: 'Sir Gemota\'s SOCSCI 031 and his adventures around the world',
-    creationTime: DateTime.now(), modifiedTime: DateTime.now()
-  );
+List<Workspace> workspaces = [];
 
 List <Shadow> defaultShadow = 
 [

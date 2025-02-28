@@ -38,22 +38,16 @@ class _SignUpPageState extends State<SignUpPage> {
 
     setState(() => _isLoading = true);
 
-    try {
-      final response = await ApiService().signup(username, email, password);
+    final response = await ApiService().signup(username, email, password);
 
-      if (response['success']) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Signup successful!"), backgroundColor: Colors.green)
-        );
-        Navigator.pop(context); // Navigate back after successful signup
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response['message']), backgroundColor: Colors.red)
-        );
-      }
-    } catch (e) {
+    if (response.containsKey("token")) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Signup failed. Try again."), backgroundColor: Colors.red)
+          SnackBar(content: Text("Signup successful!"), backgroundColor: Colors.green)
+      );
+      Navigator.pop(context); // Navigate back after successful signup
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response["error"]), backgroundColor: Colors.red)
       );
     }
 

@@ -38,11 +38,14 @@ class _SignInPageState extends State<SignInPage> with SingleTickerProviderStateM
     });
 
     if (response.containsKey("token")) {
+      //ASSIGN TOKEN
+      token = response["token"];
+      print('User token is $token');
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
     } else {
-      setState(() {
-        errorMessage = response["error"];
-      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response["error"]), backgroundColor: Colors.red)
+      );
     }
   }
 

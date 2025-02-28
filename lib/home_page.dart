@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                                     return WorkspacePage(
-                                      title: currentWorkspace.title,
+                                      workspace: currentWorkspace,
                                     );
                                   }));
                                 },
