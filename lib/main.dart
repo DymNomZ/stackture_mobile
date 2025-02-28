@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:stackture_mobile/auth_page.dart';
+import 'package:stackture_mobile/sign_in_page.dart';
 import 'package:stackture_mobile/splash_screen.dart';
 
 void main() {
@@ -13,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Stackture',
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: AuthPage(),
     );
   }
 }

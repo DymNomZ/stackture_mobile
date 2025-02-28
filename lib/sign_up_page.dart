@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:stackture_mobile/utils/api_service.dart';
 import 'package:stackture_mobile/utils/button.dart';
 import 'package:stackture_mobile/utils/colors.dart';
 import 'package:stackture_mobile/utils/textfield.dart';
 import 'package:stackture_mobile/utils/variables.dart';
+
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -12,12 +14,52 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  
+
   final GlobalKey<ShakingTextFieldState> _usernameTfKey = GlobalKey<ShakingTextFieldState>();
   final GlobalKey<ShakingTextFieldState> _emailTfKey = GlobalKey<ShakingTextFieldState>();
   final GlobalKey<ShakingTextFieldState> _passwordTfKey = GlobalKey<ShakingTextFieldState>();
   final GlobalKey<ShakingTextFieldState> _confirmPasswordTfKey = GlobalKey<ShakingTextFieldState>();
-  
+
+  bool _isLoading = false;
+
+  Future<void> _signUp() async {
+    String username = _usernameTfKey.currentState!.getText();
+    String email = _emailTfKey.currentState!.getText();
+    String password = _passwordTfKey.currentState!.getText();
+    String confirmPassword = _confirmPasswordTfKey.currentState!.getText();
+
+    // Validate fields
+    bool isValid = _usernameTfKey.currentState!.validateAndShake() &
+    _emailTfKey.currentState!.validateAndShake() &
+    _passwordTfKey.currentState!.validateAndShake() &
+    _confirmPasswordTfKey.currentState!.checkIfMatch(password);
+
+    if (!isValid) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final response = await ApiService().signup(username, email, password);
+
+      if (response['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Signup successful!"), backgroundColor: Colors.green)
+        );
+        Navigator.pop(context); // Navigate back after successful signup
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response['message']), backgroundColor: Colors.red)
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Signup failed. Try again."), backgroundColor: Colors.red)
+      );
+    }
+
+    setState(() => _isLoading = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,83 +76,72 @@ class _SignUpPageState extends State<SignUpPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    }, 
-                    icon: Icon(
-                      Icons.cancel_outlined,
-                      size: 40,
-                      color: Colors.white,
-                    )
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        Icons.cancel_outlined,
+                        size: 40,
+                        color: Colors.white,
+                      )
                   ),
                 )
               ],
             ),
-            Image.asset(
-              "assets/images/books.png",
-              width: 100,
-              height: 100,
-            ),
-            SizedBox(height: 20),
+            Image.asset("assets/images/books.png", width: 100, height: 100),
+            const SizedBox(height: 20),
             Text(
               "Sign Up",
               style: TextStyle(
-                fontSize: 45, color: Colors.white, letterSpacing: 1.5,
-                fontWeight: FontWeight.bold, fontFamily: 'LilitaOne',
-                shadows: defaultShadow
+                  fontSize: 45, color: Colors.white, letterSpacing: 1.5,
+                  fontWeight: FontWeight.bold, fontFamily: 'LilitaOne',
+                  shadows: defaultShadow
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             SizedBox(
-              width: 325,
-              child: ShakingTextField(
-                key: _usernameTfKey,
-                label: 'Username',
-                hint: 'Enter Username',
-                errorText: 'Must input username',
-              )
+                width: 325,
+                child: ShakingTextField(
+                  key: _usernameTfKey,
+                  label: 'Username',
+                  hint: 'Enter Username',
+                  errorText: 'Must input username',
+                )
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             SizedBox(
-              width: 325,
-              child: ShakingTextField(
-                key: _emailTfKey, type: TextInputType.emailAddress,
-                label: 'Email',
-                hint: 'Enter Email',
-                errorText: 'Must input email',
-              )
+                width: 325,
+                child: ShakingTextField(
+                  key: _emailTfKey, type: TextInputType.emailAddress,
+                  label: 'Email',
+                  hint: 'Enter Email',
+                  errorText: 'Must input email',
+                )
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             SizedBox(
-              width: 325,
-              child: ShakingTextField(
-                key: _passwordTfKey,
-                label: 'Password',
-                hint: 'Enter Password',
-                errorText: 'Must input password',
-              )
+                width: 325,
+                child: ShakingTextField(
+                  key: _passwordTfKey,
+                  label: 'Password',
+                  hint: 'Enter Password',
+                  errorText: 'Must input password',
+                )
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             SizedBox(
-              width: 325,
-              child: ShakingTextField(
-                key: _confirmPasswordTfKey,
-                label: 'Confirm Password',
-                hint: 'Confirm Password',
-                errorText: 'Passwords must match',
-              )
+                width: 325,
+                child: ShakingTextField(
+                  key: _confirmPasswordTfKey,
+                  label: 'Confirm Password',
+                  hint: 'Confirm Password',
+                  errorText: 'Passwords must match',
+                )
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             DefaultButton(
-              text: "Submit", 
-              function: () {
-                _usernameTfKey.currentState?.validateAndShake();
-                _emailTfKey.currentState?.validateAndShake();
-                _passwordTfKey.currentState?.validateAndShake();
-                _confirmPasswordTfKey.currentState?.checkIfMatch(
-                  _passwordTfKey.currentState!.getText()
-                );
-              }
+              text: _isLoading ? "Submitting..." : "Submit",
+              function: _isLoading ? null : _signUp,
             ),
           ],
         ),
