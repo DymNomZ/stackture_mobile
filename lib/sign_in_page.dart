@@ -117,7 +117,7 @@ class _SignInPageState extends State<SignInPage> with SingleTickerProviderStateM
               ),
             SizedBox(height: 10),
             isLoading
-                ? CircularProgressIndicator()
+                ? CircularProgressIndicator(color: Colors.white)
                 : DefaultButton(
               text: "Submit",
               function: () {
