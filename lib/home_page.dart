@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 import 'package:stackture_mobile/recent_activity_panel.dart';
+import 'package:stackture_mobile/utils/api_service.dart';
 import 'package:stackture_mobile/utils/colors.dart';
 import 'package:stackture_mobile/utils/fab_location.dart';
 import 'package:stackture_mobile/utils/create_workspace_popup.dart';
@@ -25,10 +25,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   //Will be used to load workspaces of user
-  void loadUserWorkspaces(){
-    setState(() {
-      
-    });
+  void loadUserWorkspaces() async {
+
+    Future<List<dynamic>> userWorkspaces = ApiService().fetchWorkspaces();
+    List<dynamic> workspacesList = await userWorkspaces;
+
+    for(var workspace in workspacesList){
+      workspaces.add(
+        Workspace(
+          id: workspace["id"], 
+          rootId: workspace["root_id"] ?? 0, 
+          title: workspace["title"],
+          description: workspace["description"]
+        )
+      );
+    }
+
+    refreshWorkspaces();
   }
 
   void refreshWorkspaces(){
@@ -111,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                 child: ReorderableGridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount (
                     crossAxisCount: 1,
-                    childAspectRatio: 2.5
+                    childAspectRatio: 3
                   ),
                   itemCount: workspaces.length,
                   itemBuilder: (context, index) {
@@ -137,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                                   }));
                                 },
                                 title: RichText(
-                                  maxLines: 3,
+                                  maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   text: TextSpan(
                                       text: '${currentWorkspace.title} \n',
@@ -157,17 +170,6 @@ class _HomePageState extends State<HomePage> {
                                         )
                                       ]),
                                 ),
-                                subtitle: Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    'Edited: ${DateFormat('EEE MMM d, yyyy h:mm a').format(currentWorkspace.modifiedTime)}\nCreated on: ${DateFormat('EEE MMM d, yyyy h:mm a').format(currentWorkspace.creationTime)}',
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        fontStyle: FontStyle.italic,
-                                        color: Colors.white,
-                                  ),
-                                ),
-                              ),
                             )),
                           Padding(
                             padding: const EdgeInsets.only(top: 13.0),

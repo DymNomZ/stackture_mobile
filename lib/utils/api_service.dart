@@ -1,44 +1,61 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:stackture_mobile/utils/variables.dart';
+import 'package:stackture_mobile/utils/workspace.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ApiService {
   static const String baseUrl = "http://stackture.eloquenceprojects.org";
 
   /// AI Chat API
-  Future<Map<String, dynamic>> connectToAI(int id) async {
-    http.Response? test;
-    try {
-      final response = await http.post(
-        Uri.parse("$baseUrl/chat"),
-        body: {
-          "workspace_id": id.toString(),
-          "node_id": "0",
-          "token": token!
+  bool connectToAI(Workspace workspace) {
+
+    bool status = false;
+
+    channel = WebSocketChannel.connect(
+      Uri.parse('ws://stackture.eloquenceprojects.org/chat'),
+    );
+
+    // Send the handshake message
+    final handshakeMessage = {
+      "workspace_id": workspace.id,
+      "node_id": 0,
+      "token": token,
+    };
+
+    channel!.sink.add(jsonEncode(handshakeMessage));
+
+    channel!.stream.listen(
+      (message) {
+        try {
+          final jsonResponse = jsonDecode(message);
+          if (jsonResponse['status'] == 'success') {
+            print('Handshake successful: ${jsonResponse['message']}');
+            status = true;
+          } else {
+            print('Handshake failed: ${jsonResponse['message']}');
+          }
+        } catch (e) {
+          print('Error decoding JSON: $e');
         }
-      );
+      },
+      onDone: () {
+        print('WebSocket connection closed.');
+      },
+      onError: (error) {
+        print('WebSocket error: $error');
+      },
+    );
 
-      test = response;
+    return status;
 
-      final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        print(response.body);
-        return {"workspace_id": data["workspace_id"]};
-      } else {
-        return {"error": data["error"]};
-      }
-    } catch (e) {
-      print("CONNECTING TO AI " + e.toString() + test!.body);
-      return {"error": "Error creating workspace."};
-    }
   }
 
   /// Fetch User Workspaces API
-  Future<Map<String, dynamic>> fetchWorkspaces() async {
+  Future<List<dynamic>> fetchWorkspaces() async {
     http.Response? test;
     try {
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse("$baseUrl/api/workspace/fetch"),
         headers: {
           "Authorization": "Bearer $token",
@@ -50,14 +67,14 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        print(response.body);
-        return {"workspace_id": data["workspace_id"]};
+        //print(data.toString());
+        return data;
       } else {
-        return {"error": data["error"]};
+        return [{"error": data["error"]}];
       }
     } catch (e) {
-      print("FETCH " + e.toString() + test!.body);
-      return {"error": "Error creating workspace."};
+      //print("FETCH " + e.toString() + test!.body);
+      return [{"error": "Error creating workspace."}];
     }
   }
 
@@ -82,13 +99,13 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        print(data["workspace_id"]);
+        //print(data["workspace_id"]);
         return {"workspace_id": data["workspace_id"]};
       } else {
         return {"error": data["error"]};
       }
     } catch (e) {
-      print("CREATE " + e.toString() + test!.body);
+      //print("CREATE " + e.toString() + test!.body);
       return {"error": "Error creating workspace."};
     }
   }

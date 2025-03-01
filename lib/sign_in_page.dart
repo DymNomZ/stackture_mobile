@@ -41,7 +41,7 @@ class _SignInPageState extends State<SignInPage> with SingleTickerProviderStateM
       //ASSIGN TOKEN
       token = response["token"];
       print('User token is $token');
-      ApiService().fetchWorkspaces();
+      
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

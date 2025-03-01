@@ -1,15 +1,12 @@
 class Workspace {
 
-  int id;
+  int id, rootId;
   String title;
   String description;
-  DateTime modifiedTime;
-  DateTime creationTime;
 
   Workspace({
-    required this.id,
+    required this.id, required this.rootId,
     required this.title, required this.description,
-    required this.modifiedTime, required this.creationTime
   });
 
 }

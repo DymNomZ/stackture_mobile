@@ -1,18 +1,14 @@
 import 'dart:ui';
 
 import 'package:stackture_mobile/utils/workspace.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 //WILL HOLD TOKEN OF USER
 String? token;
 
-//temp
-Workspace w = Workspace(
-  id: 1, 
-  title: "title", description: "description", 
-  modifiedTime: DateTime.now(), creationTime: DateTime.now()
-);
+List<Workspace> workspaces = [];
 
-List<Workspace> workspaces = [w];
+WebSocketChannel? channel;
 
 List <Shadow> defaultShadow = 
 [

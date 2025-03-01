@@ -43,11 +43,10 @@ class _CreateWorkspacePopupState extends State<CreateWorkspacePopup> {
       Workspace newWorkspace = 
       Workspace(
         id: response["workspace_id"], 
-        title: title, description: description, 
-        creationTime: DateTime.now(),
-        modifiedTime: DateTime.now()
+        rootId: 0,
+        title: title, description: description,
       );
-    
+     
       workspaces.add(newWorkspace);
       //trigger refresh list on home page
       widget.callBack();
