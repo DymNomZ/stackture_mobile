@@ -42,7 +42,7 @@ class _CreateWorkspacePopupState extends State<CreateWorkspacePopup> {
       //add new workspace
       Workspace newWorkspace = 
       Workspace(
-        id: response["workspace_id"],
+        id: response["workspace_id"], 
         title: title, description: description, 
         creationTime: DateTime.now(),
         modifiedTime: DateTime.now()

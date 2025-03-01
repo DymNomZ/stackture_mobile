@@ -5,7 +5,14 @@ import 'package:stackture_mobile/utils/workspace.dart';
 //WILL HOLD TOKEN OF USER
 String? token;
 
-List<Workspace> workspaces = [];
+//temp
+Workspace w = Workspace(
+  id: 1, 
+  title: "title", description: "description", 
+  modifiedTime: DateTime.now(), creationTime: DateTime.now()
+);
+
+List<Workspace> workspaces = [w];
 
 List <Shadow> defaultShadow = 
 [

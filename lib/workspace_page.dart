@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:stackture_mobile/utils/api_service.dart';
+import 'package:stackture_mobile/utils/chat_popup.dart';
 import 'package:stackture_mobile/utils/colors.dart';
 import 'package:stackture_mobile/utils/fab_location.dart';
 import 'package:stackture_mobile/utils/workspace.dart';
@@ -18,7 +20,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: StacktureColors.secondary,
+      backgroundColor: StacktureColors.grid,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -36,9 +38,15 @@ class _WorkspacePageState extends State<WorkspacePage> {
           },
         ),
       ),
-      body: Stack(
-        children: [
-          Column(
+      body: SizedBox(
+        height: double.infinity,
+        width: double.infinity,
+        child: GridPaper(
+          color: Colors.white,
+          divisions: 1,
+          subdivisions: 8,
+          interval: 200,
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -47,7 +55,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
               
             ],
           ),
-        ],
+        )
       ),
       floatingActionButtonLocation: FABLocation(),
       floatingActionButton: 
@@ -56,10 +64,11 @@ class _WorkspacePageState extends State<WorkspacePage> {
         backgroundColor: StacktureColors.primary,
         child: Icon(Icons.chat_outlined, color: Colors.white),
         onPressed: () {
+          ApiService().connectToAI(widget.workspace.id);
           showDialog(
             context: context, 
             builder: (context) {
-              return Placeholder();
+              return ChatPopup();
             }
           );
         }
