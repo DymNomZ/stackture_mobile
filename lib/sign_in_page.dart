@@ -110,7 +110,7 @@ class _SignInPageState extends State<SignInPage> with SingleTickerProviderStateM
                   label: 'Password',
                   hint: 'Enter Password',
                   errorText: 'Must input password',
-                  // obscureText: true,
+                  obscureText: true,
                 )
             ),
             SizedBox(height: 20),

@@ -16,14 +16,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  bool _showRecent = false; // Controls recent activity visibility
-
-  void toggleRecent() {
-    setState(() {
-      _showRecent = !_showRecent;
-    });
-  }
-
   //Will be used to load workspaces of user
   void loadUserWorkspaces() async {
 
@@ -48,6 +40,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {}); //refresh the list builder
   }
 
+
+
   @override
   void initState(){
     super.initState();
@@ -64,15 +58,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: StacktureColors.primary,
         leading: IconButton(
           icon: Icon(Icons.door_back_door_outlined, color: Colors.white),
-          onPressed: () {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            } else {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-            }
-          },
+          onPressed: () => _showLogoutConfirmation(context),
         ),
       ),
       floatingActionButtonLocation: FABLocation(),
@@ -97,34 +83,47 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(padding: EdgeInsets.only(top: 20),
+
+              Padding(
+                padding: EdgeInsets.only(top: 20, bottom: 20),
                 child: Text(
                   "Workspaces",
                   style: TextStyle(
-                      fontSize: 30, color: Colors.white, letterSpacing: 1.5,
-                      fontWeight: FontWeight.bold, fontFamily: 'LilitaOne',
-                      shadows: defaultShadow
+                    fontSize: 30,
+                    color: Colors.white,
+                    letterSpacing: 1.5,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'LilitaOne',
+                    shadows: defaultShadow,
                   ),
                 ),
               ),
-              SizedBox(height: 10),
-              Padding(padding: EdgeInsets.only(left: 30, right: 30),
-                child: Text(
-                  "These are isolated spaces where you can have study sessions.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 15, color: Colors.white, letterSpacing: 1.5,
-                      fontWeight: FontWeight.bold, fontFamily: 'LilitaOne',
-                      shadows: defaultShadow
+
+              if (workspaces.isEmpty) ...[
+                SizedBox(height: 10),
+                Padding(
+                  padding: EdgeInsets.only(left: 30, right: 30),
+                  child: Text(
+                    "These are isolated spaces where you can have study sessions. Click the '+' to start learning!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white,
+                      letterSpacing: 1.5,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'LilitaOne',
+                      shadows: defaultShadow,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
+                SizedBox(height: 20),
+              ],
+
               Expanded(
                 child: ReorderableGridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount (
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 1,
-                    childAspectRatio: 3
+                    childAspectRatio: 3,
                   ),
                   itemCount: workspaces.length,
                   itemBuilder: (context, index) {
@@ -135,7 +134,8 @@ class _HomePageState extends State<HomePage> {
                       color: StacktureColors.tertiary,
                       elevation: 3,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Row(
@@ -143,76 +143,114 @@ class _HomePageState extends State<HomePage> {
                             Expanded(
                               child: ListTile(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                    return WorkspacePage(
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => WorkspacePage(
                                       workspace: currentWorkspace,
-                                    );
-                                  }));
+                                    ),
+                                  ));
                                 },
                                 title: RichText(
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   text: TextSpan(
-                                      text: '${currentWorkspace.title} \n',
-                                      style: TextStyle(
+                                    text: '${currentWorkspace.title} \n',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      height: 1.5,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: currentWorkspace.description,
+                                        style: TextStyle(
                                           color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                          height: 1.5),
-                                      children: [
-                                        TextSpan(
-                                          text: currentWorkspace.description,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 15,
-                                              height: 1.5),
-                                        )
-                                      ]),
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 15,
+                                          height: 1.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                            )),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 13.0),
-                            child: IconButton(
-                              icon: Icon(Icons.delete_outline, color: Colors.white, size: 30),
-                              onPressed: () {
-                                workspaces.removeAt(index);
-                                refreshWorkspaces();
-                              },
+                              ),
                             ),
-                          )
-                      ],
-                    )));
+                            Padding(
+                              padding: const EdgeInsets.only(top: 13.0),
+                              child: IconButton(
+                                icon: Icon(Icons.delete_outline, color: Colors.white, size: 30),
+                                onPressed: () {
+                                  workspaces.removeAt(index);
+                                  refreshWorkspaces();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
                   },
                   onReorder: (oldIndex, newIndex) {
                     setState(() {
-                      //ignore
+                      // Ignore
                     });
                   },
-                )
-              )
-            ],
-          ),
-          RecentActivityPanel(isVisible: _showRecent),
-          AnimatedPositioned(
-            duration: Duration(milliseconds: 300),
-            top: 20,
-            left: _showRecent ? 170 : -17,
-            child: FloatingActionButton(
-              heroTag: "recent_btn",
-              onPressed: toggleRecent,
-              backgroundColor: StacktureColors.primary,
-              child: Transform.translate(
-                offset: Offset(_showRecent ? 0 : 6, 0), // Moves the icon 5 pixels to the left
-                child: Icon(
-                  _showRecent ? Icons.close : Icons.history,
-                  color: Colors.white,
                 ),
               ),
-            ),
+            ],
           ),
+
         ],
       ),
     );
   }
+
+  void _showLogoutConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: StacktureColors.primary, // Set background color
+          title: Text(
+            "Confirm Logout",
+            style: TextStyle(
+              fontSize: 30,
+              color: Colors.white,
+              letterSpacing: 1.5,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'LilitaOne',
+              shadows: defaultShadow,
+            ), // Change text color
+          ),
+          content: Text(
+            "Are you sure you want to log out?",
+            style: TextStyle(color: Colors.white70), // Slightly dim text color
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Cancel", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                } else {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                }
+              },
+              child: Text("Logout", style: TextStyle(color: Colors.redAccent)),
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15), // Rounded corners
+          ),
+        );
+      },
+    );
+  }
+
 }

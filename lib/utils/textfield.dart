@@ -4,11 +4,12 @@ class ShakingTextField extends StatefulWidget {
   TextInputType? type;
   String? label, hint, errorText;
   double? fontSize, errorSize;
+  final bool obscureText;
 
   ShakingTextField({
     super.key, this.type, 
     this.label, this.hint, this.errorText,
-    this.fontSize, this.errorSize
+    this.fontSize, this.errorSize , this.obscureText = false,
   });
 
   @override
@@ -19,12 +20,17 @@ class ShakingTextFieldState extends State<ShakingTextField>
     with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
   bool _isError = false;
+  late bool isObscured;
   late AnimationController _animationController;
   late Animation<double> _animation;
+
+
+
 
   @override
   void initState() {
     super.initState();
+    isObscured = widget.obscureText;
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -40,6 +46,13 @@ class ShakingTextFieldState extends State<ShakingTextField>
       }
     });
   }
+
+  void _toggleObscureText() {
+    setState(() {
+      isObscured = !isObscured;
+    });
+  }
+
 
   String getText() => _controller.text;
 
@@ -90,9 +103,15 @@ class ShakingTextFieldState extends State<ShakingTextField>
             return Transform.translate(
               offset: Offset(translateX, 0),
               child: TextField(
+                obscureText: isObscured,
                 keyboardType: widget.type,
                 controller: _controller,
                 decoration: InputDecoration(
+                  suffixIcon: widget.obscureText
+                      ? IconButton(
+                    icon: Icon(isObscured ? Icons.visibility : Icons.visibility_off),
+                    onPressed: _toggleObscureText,
+                  ) : null,
                   filled: true,
                   fillColor: Colors.white,
                   hintText: widget.hint,

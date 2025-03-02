@@ -47,7 +47,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
         child: GridPaper(
           color: Colors.white,
           divisions: 1,
-          subdivisions: 8,
+          subdivisions: 4,
           interval: 200,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

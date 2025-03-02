@@ -110,7 +110,7 @@ class ApiService {
     }
   }
 
-  /// Login API
+  //  Login API
   Future<Map<String, dynamic>> login(String username, String password) async {
     try {
       final response = await http.post(
@@ -131,7 +131,7 @@ class ApiService {
     }
   }
 
-  /// Signup API
+  // Signup API
   Future<Map<String, dynamic>> signup(String username, String email, String password) async {
     try {
       final response = await http.post(
