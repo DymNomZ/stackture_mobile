@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:stackture_mobile/utils/api_service.dart';
 import 'package:stackture_mobile/utils/chat_popup.dart';
 import 'package:stackture_mobile/utils/colors.dart';
 import 'package:stackture_mobile/utils/fab_location.dart';
-import 'package:stackture_mobile/utils/variables.dart';
 import 'package:stackture_mobile/utils/workspace.dart';
 
 class WorkspacePage extends StatefulWidget {
@@ -67,22 +63,13 @@ class _WorkspacePageState extends State<WorkspacePage> {
         backgroundColor: StacktureColors.primary,
         child: Icon(Icons.chat_outlined, color: Colors.white),
         onPressed: () {
-          if(ApiService().connectToAI(widget.workspace)){
-            channel!.sink.add("Hello!");
-
-            channel!.stream.listen(
-              (message) {
-                print('test: $message');
-              }
-            );
-          }
           showDialog(
-            context: context, 
+            context: context,
             builder: (context) {
-              return ChatPopup();
-            }
+              return ChatPopup(workspace: widget.workspace);
+            },
           );
-        }
+        },
       ),
     );
   }

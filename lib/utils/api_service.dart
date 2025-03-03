@@ -1,54 +1,36 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:stackture_mobile/utils/variables.dart';
-import 'package:stackture_mobile/utils/workspace.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ApiService {
   static const String baseUrl = "http://stackture.eloquenceprojects.org";
 
-  /// AI Chat API
-  bool connectToAI(Workspace workspace) {
-
-    bool status = false;
-
-    channel = WebSocketChannel.connect(
-      Uri.parse('ws://stackture.eloquenceprojects.org/chat'),
-    );
-
-    // Send the handshake message
-    final handshakeMessage = {
-      "workspace_id": workspace.id,
-      "node_id": 0,
-      "token": token,
-    };
-
-    channel!.sink.add(jsonEncode(handshakeMessage));
-
-    channel!.stream.listen(
-      (message) {
-        try {
-          final jsonResponse = jsonDecode(message);
-          if (jsonResponse['status'] == 'success') {
-            print('Handshake successful: ${jsonResponse['message']}');
-            status = true;
-          } else {
-            print('Handshake failed: ${jsonResponse['message']}');
-          }
-        } catch (e) {
-          print('Error decoding JSON: $e');
+  /// Delete Workspace API
+  Future<Map<String, dynamic>> deleteWorkspace(int id) async {
+    http.Response? test;
+    try {
+      final response = await http.delete(
+        Uri.parse("$baseUrl/api/workspace/delete/$id"),
+        headers: {
+          "Authorization": "Bearer $token",
         }
-      },
-      onDone: () {
-        print('WebSocket connection closed.');
-      },
-      onError: (error) {
-        print('WebSocket error: $error');
-      },
-    );
+      );
 
-    return status;
+      test = response;
 
+      final data = jsonDecode(response.body);
+
+      print(response.statusCode);
+      if (response.statusCode == 204) {
+        return {"success": "success lol"};
+      } else {
+        return {"error": data["error"]};
+      }
+    } catch (e) {
+      print("DELETE " + e.toString() + test!.body + test.statusCode.toString());
+      return {"error": "Error deleting workspace."};
+    }
   }
 
   /// Fetch User Workspaces API

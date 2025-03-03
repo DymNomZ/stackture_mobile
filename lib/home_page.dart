@@ -40,7 +40,23 @@ class _HomePageState extends State<HomePage> {
     setState(() {}); //refresh the list builder
   }
 
+  Future<void> _deleteWorkspace(Workspace workspace, int index) async {
 
+    print(workspace.id);
+    final response = await ApiService().deleteWorkspace(workspace.id);
+
+    if (!response.containsKey("error")) {
+     
+      workspaces.removeAt(index);
+      refreshWorkspaces();
+
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response["error"]), backgroundColor: Colors.red)
+      );
+    }
+
+  }
 
   @override
   void initState(){
@@ -180,8 +196,7 @@ class _HomePageState extends State<HomePage> {
                               child: IconButton(
                                 icon: Icon(Icons.delete_outline, color: Colors.white, size: 30),
                                 onPressed: () {
-                                  workspaces.removeAt(index);
-                                  refreshWorkspaces();
+                                  _deleteWorkspace(currentWorkspace, index);
                                 },
                               ),
                             ),

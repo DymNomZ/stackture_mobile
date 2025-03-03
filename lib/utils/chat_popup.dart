@@ -1,21 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:stackture_mobile/utils/colors.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:stackture_mobile/utils/variables.dart';
+import 'package:stackture_mobile/utils/workspace.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ChatPopup extends StatefulWidget {
-  const ChatPopup({super.key});
+
+  Workspace workspace;
+
+  ChatPopup({super.key, required this.workspace});
 
   @override
   State<ChatPopup> createState() => _ChatPopupState();
 }
 
 class _ChatPopupState extends State<ChatPopup> {
+  
   final TextEditingController _controller = TextEditingController();
   String _response = "";
+  WebSocketChannel? channel;
 
-  Future<void> sendMessage() async {
+   /// AI Chat API
+  void connectToAI() {
+
+    channel = WebSocketChannel.connect(
+      Uri.parse('ws://stackture.eloquenceprojects.org/chat'),
+    );
+
+    // Send the handshake message
+    final handshakeMessage = {
+      "workspace_id": widget.workspace.id,
+      "node_id": 0,
+      "token": token,
+    };
+
+    channel!.sink.add(jsonEncode(handshakeMessage));
+
+    setState(() {
+      _response = 'loading...';
+    });
+
+    channel!.stream.listen(
+      (message) {
+
+        //For executing handshake initially
+        try {
+          final jsonResponse = jsonDecode(message);
+          if (jsonResponse['status'] == 'success') {
+            
+            print('Handshake successful: ${jsonResponse['message']}');
+
+            //chat proper
+            setState(() {
+              _response = jsonResponse['message'];
+            });
+
+          } else {
+            print('Handshake failed: ${jsonResponse['message']}');
+          }
+        } catch (e) {
+          print('Error decoding JSON: $e');
+        }
+        
+      },
+      onDone: () {
+        print('WebSocket connection closed.');
+      },
+      onError: (error) {
+        print('WebSocket error: $error');
+      },
+      
+    );
+
+  }
+
+  void sendMessage() {
+    
     String prompt = _controller.text.trim();
     if (prompt.isEmpty) return;
 
@@ -23,36 +85,22 @@ class _ChatPopupState extends State<ChatPopup> {
       _response = "Loading...";
     });
 
-    try {
-      final response = await http.post(
-        Uri.parse('http://stackture.eloquenceprojects.org/chat'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'prompt': prompt}),
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          _response = jsonDecode(response.body)['response'];
-        });
-      } else {
-        setState(() {
-          _response = "Error: ${response.statusCode}";
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _response = "Failed to connect to server.";
-      });
-    }
-
+    channel!.sink.add(prompt);
+    
     _controller.clear();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    connectToAI();
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-        height: 250,
+        height: 700,
         width: 400,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(15.0)),
