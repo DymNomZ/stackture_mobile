@@ -32,7 +32,12 @@ class _WorkspacePageState extends State<WorkspacePage> {
         ),
         backgroundColor: StacktureColors.primary,
         leading: IconButton(
-          icon: Icon(Icons.home_outlined, color: Colors.white),
+          icon: Image.asset(""
+              "assets/images/left.png",
+            width: 20,
+            height: 30,
+            color: Colors.white,
+          ),
           onPressed: () {
             Navigator.of(context).pop(context);
           },
@@ -60,7 +65,12 @@ class _WorkspacePageState extends State<WorkspacePage> {
       FloatingActionButton(
         heroTag: "chat_btn",
         backgroundColor: StacktureColors.primary,
-        child: Icon(Icons.chat_outlined, color: Colors.white),
+        child: Image.asset(""
+            "assets/images/chatbot.png",
+          width: 30,
+          height: 30,
+          color: Colors.white,
+        ),
         onPressed: () {
           showDialog(
             context: context,
@@ -68,7 +78,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
               return ChatPopup(workspace: widget.workspace);
             },
           );
-        },
+        }
       ),
     );
   }
