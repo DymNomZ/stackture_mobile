@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
-import 'package:stackture_mobile/recent_activity_panel.dart';
 import 'package:stackture_mobile/utils/api_service.dart';
 import 'package:stackture_mobile/utils/colors.dart';
 import 'package:stackture_mobile/utils/fab_location.dart';
@@ -18,6 +17,8 @@ class _HomePageState extends State<HomePage> {
 
   //Will be used to load workspaces of user
   void loadUserWorkspaces() async {
+
+    workspaces.clear(); // Empty list first
 
     Future<List<dynamic>> userWorkspaces = ApiService().fetchWorkspaces();
     List<dynamic> workspacesList = await userWorkspaces;

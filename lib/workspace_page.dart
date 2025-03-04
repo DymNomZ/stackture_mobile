@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stackture_mobile/utils/chat_popup.dart';
 import 'package:stackture_mobile/utils/colors.dart';
 import 'package:stackture_mobile/utils/fab_location.dart';
+import 'package:stackture_mobile/utils/tree_screen.dart';
 import 'package:stackture_mobile/utils/workspace.dart';
 
 class WorkspacePage extends StatefulWidget {
@@ -48,10 +49,8 @@ class _WorkspacePageState extends State<WorkspacePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 10),
-              
+              Expanded(child: TreeScreen(workspace: widget.workspace))
             ],
           ),
         )

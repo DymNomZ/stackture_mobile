@@ -6,6 +6,33 @@ import 'package:stackture_mobile/utils/variables.dart';
 class ApiService {
   static const String baseUrl = "http://stackture.eloquenceprojects.org";
 
+    /// Get Tree API
+  Future<List<dynamic>> getTree(int id) async {
+    http.Response? test;
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/api/workspace/get/$id"),
+        headers: {
+          "Authorization": "Bearer $token",
+        }
+      );
+
+      test = response;
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        print(data);
+        return data;
+      } else {
+        return [{"error": data["error"]}];
+      }
+    } catch (e) {
+      //print("GET " + e.toString() + test!.body);
+      return [{"error": "Error retrieving tree."}];
+    }
+  }
+
   /// Delete Workspace API
   Future<Map<String, dynamic>> deleteWorkspace(int id) async {
     http.Response? test;
@@ -19,17 +46,17 @@ class ApiService {
 
       test = response;
 
-      final data = jsonDecode(response.body);
+      return {"success": "success lol"};
+      
+    } catch (e) {
+      print("DELETE " + e.toString() + test!.body + test.statusCode.toString());
+      final data = jsonDecode(test.body);
 
-      print(response.statusCode);
-      if (response.statusCode == 204) {
+      if (test.statusCode == 204) {
         return {"success": "success lol"};
       } else {
         return {"error": data["error"]};
       }
-    } catch (e) {
-      print("DELETE " + e.toString() + test!.body + test.statusCode.toString());
-      return {"error": "Error deleting workspace."};
     }
   }
 

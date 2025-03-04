@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:stackture_mobile/utils/colors.dart';
-import 'package:stackture_mobile/auth_page.dart';
 import 'package:stackture_mobile/utils/variables.dart';
 import 'home_page.dart';
 

@@ -49,27 +49,28 @@ class _ChatPopupState extends State<ChatPopup> {
         try {
           final jsonResponse = jsonDecode(message);
           if (jsonResponse['status'] == 'success') {
-            
             print('Handshake successful: ${jsonResponse['message']}');
-
-            //chat proper
-            setState(() {
-              _response = jsonResponse['message'];
-            });
-
           } else {
             print('Handshake failed: ${jsonResponse['message']}');
           }
+          //chat proper
+          setState(() {
+            _response = jsonResponse['message'];
+          });
         } catch (e) {
           print('Error decoding JSON: $e');
         }
         
       },
       onDone: () {
-        print('WebSocket connection closed.');
+        setState(() {
+          _response = 'Connection closed.';
+        });
       },
       onError: (error) {
-        print('WebSocket error: $error');
+        setState(() {
+          _response = 'Error: $error';
+        });
       },
       
     );
