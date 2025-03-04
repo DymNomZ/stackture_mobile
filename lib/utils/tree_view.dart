@@ -1,17 +1,31 @@
 import 'package:flutter/material.dart';
 
-class TreeView extends StatelessWidget {
-  final List<Map<String, dynamic>> problems;
-  final Map<int, Map<String, dynamic>> problemMap;
-  final Function(int, Offset) onNodePosition;
+class TreeView extends StatefulWidget {
 
-  TreeView({required this.problems, required this.problemMap, required this.onNodePosition});
+  List<dynamic> problems;
+  Map<int, Map<String, dynamic>> problemMap;
+  Function(int, Offset) onNodePosition;
+  int rootId;
+
+  TreeView({
+    required this.problems, required this.problemMap,
+     required this.onNodePosition, required this.rootId
+    });
+
+  @override
+  State<TreeView> createState() => _TreeViewState();
+}
+
+class _TreeViewState extends State<TreeView> {
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return _buildTree(problemMap[1]!, constraints.maxWidth, onNodePosition);
+        return _buildTree(
+          widget.problemMap[widget.rootId]!,
+          constraints.maxWidth, widget.onNodePosition
+        );
       },
     );
   }
@@ -45,7 +59,7 @@ class TreeView extends StatelessWidget {
     if (problem['branches'].isNotEmpty) {
       List<Widget> branchWidgets = [];
       for (int branchId in problem['branches']) {
-        branchWidgets.add(_buildTree(problemMap[branchId]!, maxWidth / problem['branches'].length, onNodePosition));
+        branchWidgets.add(_buildTree(widget.problemMap[branchId]!, maxWidth / problem['branches'].length, onNodePosition));
       }
 
       children.add(

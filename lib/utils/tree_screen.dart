@@ -16,18 +16,47 @@ class TreeScreen extends StatefulWidget {
 
 class _TreeScreenState extends State<TreeScreen> {
   
-  final List<Map<String, dynamic>> problems = 
-  [
-];
+  late List<dynamic> treeNodes = [];
 
-  Map<int, Map<String, dynamic>> _problemMap = {};
-  Map<int, Offset> _nodePositions = {}; // Store node positions
+  Map<int, Map<String, dynamic>> nodeMap = {};
+  Map<int, Offset> nodePositions = {}; // Store node positions
+
+  int rootId = 0;
+
+  Future<void> loadTreeNodes() async {
+    try {
+      treeNodes = await ApiService().getTree(widget.workspace.id);
+
+      setState(() {
+        nodeMap = {
+          for (var item in treeNodes) item['id']: item
+        };
+      });
+
+      findRootNode();
+      
+    } catch (e) {
+      print('Error loading tree nodes: $e');
+    }
+  }
+
+  void findRootNode() {
+    for (var item in treeNodes) {
+      Map<String, dynamic> mapItem = item;
+      List<dynamic>? parents = mapItem['parents'];
+
+      if (parents == null || parents.isEmpty) {
+        rootId = mapItem['id'];
+        break; // Stop after finding the first root
+      }
+    }
+    print("Root ID: $rootId"); // Optional: Print the root ID
+  }
 
   @override
   void initState() {
     super.initState();
-    ApiService().getTree(widget.workspace.id);
-    _problemMap = Map.fromIterable(problems, key: (item) => item['id'], value: (item) => item);
+    loadTreeNodes();
   }
 
   @override
@@ -38,13 +67,14 @@ class _TreeScreenState extends State<TreeScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return CustomPaint( // Use CustomPaint to draw lines
-              painter: BranchPainter(_nodePositions, _problemMap),
+              painter: BranchPainter(nodePositions, nodeMap),
               child: TreeView(
-                problems: problems,
-                problemMap: _problemMap,
+                rootId: rootId,
+                problems: treeNodes,
+                problemMap: nodeMap,
                 onNodePosition: (id, offset) {
                   setState(() {
-                    _nodePositions[id] = offset;
+                    nodePositions[id] = offset;
                   });
                 },
               ),

@@ -22,7 +22,7 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        print(data);
+        //print(data);
         return data;
       } else {
         return [{"error": data["error"]}];
