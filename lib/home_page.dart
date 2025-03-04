@@ -73,7 +73,12 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: StacktureColors.primary,
         leading: IconButton(
-          icon: Icon(Icons.door_back_door_outlined, color: Colors.white),
+          icon: Image.asset(
+            'assets/images/signout.png',  // Path to your custom icon
+            width: 30,  // Adjust size if needed
+            height: 20,
+            color: Colors.white, // Optional: Set color tint if it's an SVG
+          ),
           onPressed: () => _showLogoutConfirmation(context),
         ),
       ),
@@ -81,6 +86,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: 
       FloatingActionButton(
         heroTag: "add_btn",
+        shape: CircleBorder(),
         backgroundColor: StacktureColors.primary,
         child: Icon(Icons.add, color: Colors.white),
         onPressed: () {
@@ -266,6 +272,6 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-  }
+  }//
 
 }
