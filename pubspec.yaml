@@ -45,6 +45,7 @@ flutter:
     - assets/images/chatbot.png
     - assets/images/signout.png
     - assets/images/left.png
+    - assets/images/BG.png
 
 
 #flutter_icons:

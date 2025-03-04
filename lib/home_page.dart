@@ -14,53 +14,44 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
+  List<Color> _gradientColors = [Colors.purple, Colors.orange];
   //Will be used to load workspaces of user
   void loadUserWorkspaces() async {
-
     workspaces.clear(); // Empty list first
 
     Future<List<dynamic>> userWorkspaces = ApiService().fetchWorkspaces();
     List<dynamic> workspacesList = await userWorkspaces;
 
-    for(var workspace in workspacesList){
-      workspaces.add(
-        Workspace(
-          id: workspace["id"], 
-          rootId: workspace["root_id"] ?? 0, 
+    for (var workspace in workspacesList) {
+      workspaces.add(Workspace(
+          id: workspace["id"],
+          rootId: workspace["root_id"] ?? 0,
           title: workspace["title"],
-          description: workspace["description"]
-        )
-      );
+          description: workspace["description"]));
     }
 
     refreshWorkspaces();
   }
 
-  void refreshWorkspaces(){
+  void refreshWorkspaces() {
     setState(() {}); //refresh the list builder
   }
 
   Future<void> _deleteWorkspace(Workspace workspace, int index) async {
-
     print(workspace.id);
     final response = await ApiService().deleteWorkspace(workspace.id);
 
     if (!response.containsKey("error")) {
-     
       workspaces.removeAt(index);
       refreshWorkspaces();
-
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response["error"]), backgroundColor: Colors.red)
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(response["error"]), backgroundColor: Colors.red));
     }
-
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     setState(() {
       loadUserWorkspaces();
@@ -71,57 +62,76 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: StacktureColors.secondary,
-      appBar: AppBar(
-        backgroundColor: StacktureColors.primary,
-        leading: IconButton(
-          icon: Image.asset(
-            'assets/images/signout.png',  // Path to your custom icon
-            width: 30,  // Adjust size if needed
-            height: 20,
-            color: Colors.white, // Optional: Set color tint if it's an SVG
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(65),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.teal, Colors.blue],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-          onPressed: () => _showLogoutConfirmation(context),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true, // Centers the title
+
+            title: Text(
+              "Workspace",
+              style: TextStyle(
+                fontSize: 30,
+                color: Colors.white,
+                letterSpacing: 1.5,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'LilitaOne',
+                shadows: defaultShadow,
+              ),
+            ),
+
+            leading: IconButton(
+              icon: Image.asset(
+                'assets/images/signout.png',
+                width: 30,
+                height: 20,
+                color: Colors.white,
+              ),
+              onPressed: () => _showLogoutConfirmation(context),
+            ),
+          ),
         ),
       ),
       floatingActionButtonLocation: FABLocation(),
-      floatingActionButton: 
-      FloatingActionButton(
-        heroTag: "add_btn",
-        shape: CircleBorder(),
-        backgroundColor: StacktureColors.primary,
-        child: Icon(Icons.add, color: Colors.white),
-        onPressed: () {
-          showDialog(
-            context: context, 
-            builder: (context) {
-              return CreateWorkspacePopup(callBack: refreshWorkspaces);
-            }
-          );
-        }
-      ),
+      floatingActionButton: FloatingActionButton(
+          heroTag: "add_btn",
+          shape: CircleBorder(),
+          backgroundColor: StacktureColors.primary,
+          child: Icon(Icons.add, color: Colors.white),
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return CreateWorkspacePopup(callBack: refreshWorkspaces);
+                });
+          }),
       body: Stack(
         children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/images/BG.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-
               Padding(
-                padding: EdgeInsets.only(top: 20, bottom: 20),
-                child: Text(
-                  "Workspaces",
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.white,
-                    letterSpacing: 1.5,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'LilitaOne',
-                    shadows: defaultShadow,
-                  ),
-                ),
+                padding: EdgeInsets.only(bottom: 15),
               ),
-
               if (workspaces.isEmpty) ...[
                 SizedBox(height: 10),
                 Padding(
@@ -141,7 +151,6 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(height: 20),
               ],
-
               Expanded(
                 child: ReorderableGridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -166,11 +175,13 @@ class _HomePageState extends State<HomePage> {
                             Expanded(
                               child: ListTile(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => WorkspacePage(
-                                      workspace: currentWorkspace,
-                                    ),
-                                  ));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => WorkspacePage(
+                                          workspace: currentWorkspace,
+                                        ),
+                                      ));
                                 },
                                 title: RichText(
                                   maxLines: 1,
@@ -201,7 +212,8 @@ class _HomePageState extends State<HomePage> {
                             Padding(
                               padding: const EdgeInsets.only(top: 13.0),
                               child: IconButton(
-                                icon: Icon(Icons.delete_outline, color: Colors.white, size: 30),
+                                icon: Icon(Icons.delete_outline,
+                                    color: Colors.white, size: 30),
                                 onPressed: () {
                                   _deleteWorkspace(currentWorkspace, index);
                                 },
@@ -221,7 +233,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-
         ],
       ),
     );
@@ -273,6 +284,5 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-  }//
-
+  } //
 }
