@@ -15,6 +15,11 @@ class WorkspacePage extends StatefulWidget {
 }
 
 class _WorkspacePageState extends State<WorkspacePage> {
+
+  void refreshTree() {
+    setState(() {}); //refresh callback
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +93,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
             showDialog(
               context: context,
               builder: (context) {
-                return ChatPopup(workspace: widget.workspace);
+                return ChatPopup(workspace: widget.workspace, callback: refreshTree);
               },
             );
           }),

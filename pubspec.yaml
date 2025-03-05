@@ -37,6 +37,9 @@ flutter:
   - family: VarelaRound
     fonts:
       - asset: assets/fonts/VarelaRound-Regular.ttf
+  - family: NotoColorEmoji
+    fonts:
+      - asset: assets/fonts/NotoColorEmoji-Regular.ttf 
 
 
   uses-material-design: true

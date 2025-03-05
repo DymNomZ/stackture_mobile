@@ -19,7 +19,7 @@ class ApiService {
 
       test = response;
 
-      final data = jsonDecode(response.body);
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200) {
         //print(data);

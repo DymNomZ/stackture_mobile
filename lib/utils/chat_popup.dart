@@ -9,8 +9,9 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class ChatPopup extends StatefulWidget {
 
   Workspace workspace;
+  Function callback;
 
-  ChatPopup({super.key, required this.workspace});
+  ChatPopup({super.key, required this.workspace, required this.callback});
 
   @override
   State<ChatPopup> createState() => _ChatPopupState();
@@ -42,17 +43,30 @@ class _ChatPopupState extends State<ChatPopup> {
       _response = 'loading...';
     });
 
+  Map<String, dynamic> temp = {
+    "status": "success",
+    "message": "none",
+    "generated_tree": [],
+  };
+
     channel!.stream.listen(
       (message) {
 
         //For executing handshake initially
         try {
-          final jsonResponse = jsonDecode(message);
+          final jsonResponse = jsonDecode(message ?? temp);
           if (jsonResponse['status'] == 'success') {
             print('Handshake successful: ${jsonResponse['message']}');
+            setState(() {
+              treeNodes = jsonResponse['generated_tree'];
+              widget.callback();
+            });
           } else {
             print('Handshake failed: ${jsonResponse['message']}');
           }
+
+          print("${jsonResponse['generated_tree']}");
+
           //chat proper
           setState(() {
             _response = jsonResponse['message'];

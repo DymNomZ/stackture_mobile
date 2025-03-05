@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stackture_mobile/utils/api_service.dart';
 import 'package:stackture_mobile/utils/branch_painter.dart';
 import 'package:stackture_mobile/utils/tree_view.dart';
+import 'package:stackture_mobile/utils/variables.dart';
 import 'package:stackture_mobile/utils/workspace.dart';
 
 class TreeScreen extends StatefulWidget {
@@ -15,15 +16,13 @@ class TreeScreen extends StatefulWidget {
 }
 
 class _TreeScreenState extends State<TreeScreen> {
-  
-  late List<dynamic> treeNodes = [];
 
   Map<int, Map<String, dynamic>> nodeMap = {};
   Map<int, Offset> nodePositions = {}; // Store node positions
 
   int rootId = 0;
 
-  Future<List<dynamic>> loadTreeNodes() async { // Change return type to Future<List<dynamic>>
+  Future<void> loadTreeNodes() async { // Change return type to Future<List<dynamic>>
     try {
       treeNodes = await ApiService().getTree(widget.workspace.id);
       if (mounted) {
@@ -32,10 +31,8 @@ class _TreeScreenState extends State<TreeScreen> {
         });
         findRootNode();
       }
-      return treeNodes; // Return the fetched data
     } catch (e) {
       print('Error loading tree nodes: $e');
-      return []; // Return an empty list or handle the error appropriately
     }
   }
 
@@ -58,24 +55,27 @@ class _TreeScreenState extends State<TreeScreen> {
     loadTreeNodes();
   }
 
+
+  var screenHeight, screenWidth;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Center(
-        child: FutureBuilder( // Add FutureBuilder here
-          future: loadTreeNodes(),
-          builder: (context, snapshot) {
-            while(snapshot.connectionState != ConnectionState.waiting){
-              return CircularProgressIndicator();
-            }
-              // Data is loaded, build the UI
+        child: LayoutBuilder( 
+          builder: (context, constraints) {
+          if (treeNodes.isEmpty) { 
+            return Text(".");
+          } else {
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: LayoutBuilder(
                   builder: (context, constraints) {
+                    screenHeight = MediaQuery.of(context).size.height;
+                    screenWidth = MediaQuery.of(context).size.width;
                     return CustomPaint(
-                      painter: BranchPainter(nodePositions, nodeMap),
+                      painter: BranchPainter(nodePositions, nodeMap, screenHeight, screenWidth),
                       child: TreeView(
                         rootId: rootId,
                         problems: treeNodes,
@@ -90,6 +90,7 @@ class _TreeScreenState extends State<TreeScreen> {
                   },
                 ),
               );
+            }
           },
         ),
       ),

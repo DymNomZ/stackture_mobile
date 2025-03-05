@@ -7,6 +7,8 @@ String? token;
 
 List<Workspace> workspaces = [];
 
+List<dynamic> treeNodes = [];
+
 List <Shadow> defaultShadow = 
 [
   Shadow(

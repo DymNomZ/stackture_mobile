@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stackture_mobile/utils/node_popup.dart';
 
 class TreeView extends StatefulWidget {
 
@@ -30,14 +31,14 @@ class _TreeViewState extends State<TreeView> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return _buildTree(
-          widget.problemMap[widget.rootId]!,
+          widget.problemMap[widget.rootId],
           constraints.maxWidth, widget.onNodePosition
         );
       },
     );
   }
 
-  Widget _buildTree(Map<String, dynamic> problem, double maxWidth, Function(int, Offset) onNodePosition) {
+  Widget _buildTree(Map<String, dynamic>? problem, double maxWidth, Function(int, Offset) onNodePosition) {
     List<Widget> children = [];
     GlobalKey nodeKey = GlobalKey(); // Key to get node position
 
@@ -45,7 +46,14 @@ class _TreeViewState extends State<TreeView> {
     children.add(
       GestureDetector(
         onTap: () {
-          print('Node ${problem['id']} tapped');
+          print('Node ${problem?['id']} tapped');
+
+          showDialog(
+              context: context,
+              builder: (context) {
+                return NodePopup(node: problem);
+              },
+            );
         },
         child: Container(
           key: nodeKey, // Assign key to the node
@@ -55,18 +63,19 @@ class _TreeViewState extends State<TreeView> {
             color: Colors.blue,
           ),
           child: Text(
-            problem['icon'],
-            style: TextStyle(fontSize: 24, color: Colors.white),
+            problem?['icon'] ?? "empty ❔",
+            style: TextStyle(fontSize: 24, color: Colors.white,),
           ),
         ),
       ),
     );
 
     // Branches
-    if (problem['branches'].isNotEmpty) {
+    if (problem?['branches'].isNotEmpty ?? false) {
       List<Widget> branchWidgets = [];
-      for (int branchId in problem['branches']) {
-        branchWidgets.add(_buildTree(widget.problemMap[branchId]!, maxWidth / problem['branches'].length, onNodePosition));
+      for (int branchId in problem?['branches']) {
+        branchWidgets.add(_buildTree(widget.problemMap[branchId], 
+        maxWidth / problem?['branches'].length, onNodePosition));
       }
 
       children.add(
@@ -84,7 +93,7 @@ class _TreeViewState extends State<TreeView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       RenderBox renderBox = nodeKey.currentContext?.findRenderObject() as RenderBox;
       Offset position = renderBox.localToGlobal(Offset.zero);
-      onNodePosition(problem['id'], position);
+      onNodePosition(problem?['id'] ?? 0, position);
     });
 
     return Column(
