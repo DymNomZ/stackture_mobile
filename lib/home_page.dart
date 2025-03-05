@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                                       ));
                                 },
                                 title: RichText(
-                                  maxLines: 1,
+                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   text: TextSpan(
                                     text: '${currentWorkspace.title} \n',
