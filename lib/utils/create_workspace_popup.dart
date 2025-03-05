@@ -71,7 +71,7 @@ class _CreateWorkspacePopupState extends State<CreateWorkspacePopup> {
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-        height: 350.0,
+        height: 370.0,
         width: 400.0,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
@@ -86,7 +86,7 @@ class _CreateWorkspacePopupState extends State<CreateWorkspacePopup> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(right: 10, top: 5, bottom: 0),
                     child: IconButton(
                         onPressed: () {
                           Navigator.pop(context);
@@ -107,9 +107,9 @@ class _CreateWorkspacePopupState extends State<CreateWorkspacePopup> {
                     fontWeight: FontWeight.bold, fontFamily: 'LilitaOne',
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 15),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.only(left: 20, right: 20, top: 0),
                 child: Row(children: [
                   Text(
                     "Workspace Name",

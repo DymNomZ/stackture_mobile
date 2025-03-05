@@ -25,13 +25,13 @@ class _AuthPageState extends State<AuthPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 100),
+            SizedBox(height: 180),
             Image.asset(
               "assets/images/books.png",
               width: 100,
               height: 100,
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 15),
             Text(
               "Stackture",
               style: TextStyle(
@@ -48,7 +48,7 @@ class _AuthPageState extends State<AuthPage> {
                 shadows: defaultShadow
               ),
             ),
-            SizedBox(height: 80),
+            SizedBox(height: 50),
             DefaultButton(
               text: "Sign In", 
               function: () {
