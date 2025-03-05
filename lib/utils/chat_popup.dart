@@ -57,6 +57,10 @@ class _ChatPopupState extends State<ChatPopup> {
           final jsonResponse = jsonDecode(message ?? temp);
           if (jsonResponse['status'] == 'success') {
             print('Handshake successful: ${jsonResponse['message']}');
+            //chat proper
+          setState(() {
+            _response = jsonResponse['message'];
+          });
             setState(() {
               treeNodes = jsonResponse['generated_tree'];
               widget.callback();
@@ -67,10 +71,7 @@ class _ChatPopupState extends State<ChatPopup> {
 
           print("${jsonResponse['generated_tree']}");
 
-          //chat proper
-          setState(() {
-            _response = jsonResponse['message'];
-          });
+          
         } catch (e) {
           print('Error decoding JSON: $e');
         }
