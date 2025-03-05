@@ -19,6 +19,13 @@ class TreeView extends StatefulWidget {
 class _TreeViewState extends State<TreeView> {
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(widget.rootId);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {

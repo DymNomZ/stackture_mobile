@@ -23,20 +23,19 @@ class _TreeScreenState extends State<TreeScreen> {
 
   int rootId = 0;
 
-  Future<void> loadTreeNodes() async {
+  Future<List<dynamic>> loadTreeNodes() async { // Change return type to Future<List<dynamic>>
     try {
       treeNodes = await ApiService().getTree(widget.workspace.id);
-
-      setState(() {
-        nodeMap = {
-          for (var item in treeNodes) item['id']: item
-        };
-      });
-
-      findRootNode();
-      
+      if (mounted) {
+        setState(() {
+          nodeMap = {for (var item in treeNodes) item['id']: item};
+        });
+        findRootNode();
+      }
+      return treeNodes; // Return the fetched data
     } catch (e) {
       print('Error loading tree nodes: $e');
+      return []; // Return an empty list or handle the error appropriately
     }
   }
 
@@ -50,7 +49,7 @@ class _TreeScreenState extends State<TreeScreen> {
         break; // Stop after finding the first root
       }
     }
-    print("Root ID: $rootId"); // Optional: Print the root ID
+    //print("Root ID: $rootId"); // Optional: Print the root ID
   }
 
   @override
@@ -64,21 +63,33 @@ class _TreeScreenState extends State<TreeScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return CustomPaint( // Use CustomPaint to draw lines
-              painter: BranchPainter(nodePositions, nodeMap),
-              child: TreeView(
-                rootId: rootId,
-                problems: treeNodes,
-                problemMap: nodeMap,
-                onNodePosition: (id, offset) {
-                  setState(() {
-                    nodePositions[id] = offset;
-                  });
-                },
-              ),
-            );
+        child: FutureBuilder( // Add FutureBuilder here
+          future: loadTreeNodes(),
+          builder: (context, snapshot) {
+            while(snapshot.connectionState != ConnectionState.waiting){
+              return CircularProgressIndicator();
+            }
+              // Data is loaded, build the UI
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return CustomPaint(
+                      painter: BranchPainter(nodePositions, nodeMap),
+                      child: TreeView(
+                        rootId: rootId,
+                        problems: treeNodes,
+                        problemMap: nodeMap,
+                        onNodePosition: (id, offset) {
+                          setState(() {
+                            nodePositions[id] = offset;
+                          });
+                        },
+                      ),
+                    );
+                  },
+                ),
+              );
           },
         ),
       ),
